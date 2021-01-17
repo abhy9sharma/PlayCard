@@ -1,15 +1,16 @@
-﻿using System;
+﻿using PlayCard.Enum;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace PlayCard.Model
 {
-   public class Play
+    public class Play
     {
         private static Card cardOnTable;
         public void StartPlay()
         {
-            Console.WriteLine("Hello Lets Play card Dude");
+
             int noOfPlayer = 2;
             Player[] Players = new Player[noOfPlayer];
             PlayerPlayedCard[] playerPlayedCards = new PlayerPlayedCard[noOfPlayer];
@@ -39,15 +40,18 @@ namespace PlayCard.Model
                 DisplayCardsInHand(Players[iPlayerIndx]);
 
                 string sDecision = string.Empty;
-                while (sDecision.ToLower() != "t")
-                {
-                    Console.WriteLine("Press T to take Card");
-                    sDecision = Console.ReadLine();
-                }
+                Console.WriteLine("Press T to take Card Or Press S to shuffle a card");
+                sDecision = Console.ReadLine();
                 if (sDecision.ToLower().CompareTo("t") == 0)
                 {
                     playerPlayedCards[iPlayerIndx].cards.Add(CardOnTable);
                     CardToDiscard(Players[iPlayerIndx]);
+                }
+                if (sDecision.ToLower().CompareTo("s") == 0)
+                {
+                    ShuffleCurrentCards(Players[iPlayerIndx]);
+                    Console.WriteLine("Press T to take Card Or Press S to shuffle a card");
+                    sDecision = Console.ReadLine();
                 }
 
             }
@@ -113,6 +117,31 @@ namespace PlayCard.Model
             CardOnTable = player.cards[iCardToDiscard - 1];
             Console.WriteLine("Card drawn {0}", CardOnTable);
             player.cards.Remove(iCardToDiscard - 1);
+        }
+
+
+        public void ShuffleCurrentCards(Player p)
+        {
+
+            bool[] bAssigned = new bool[p.cards.Count];
+            for (int iRank = 0; iRank < 13; iRank++)
+            {
+                for (int iSuit = 0; iSuit < 4; iSuit++)
+                {
+                    Random randomCard = new Random();
+                   
+                        int index = randomCard.Next(p.cards.Count);
+                        if (bAssigned[index] == false)
+                        {
+                            p.cards[index] = new Card((Rank)iRank, (Suit)iSuit);
+                            bAssigned[index] = true;
+                            Console.WriteLine(p.cards[index].ToString());
+                        }
+
+                }
+            }
+
+           
         }
     }
 }
